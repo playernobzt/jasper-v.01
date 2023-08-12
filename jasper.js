@@ -1,11 +1,10 @@
-
 const qrcode = require('qrcode-terminal');
 
 const { Client, LocalAuth } = require('whatsapp-web.js');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
-	  puppeteer: {
+    puppeteer: {
 		args: ['--no-sandbox'],
 	}
 });
@@ -23,7 +22,7 @@ client.on('ready', () => {
 const { Configuration, OpenAIApi } = require("openai")
 
 const config = new Configuration({
-  apiKey: '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'
+  apiKey: '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'
 })
 
 const openai = new OpenAIApi(config);
