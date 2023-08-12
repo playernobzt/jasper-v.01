@@ -1,0 +1,17 @@
+{
+  "name": "asst-jasper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node jasper.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "openai": "^3.3.0",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.22.1"
+  }
+}
