@@ -23,7 +23,7 @@ client.on('ready', () => {
 const { Configuration, OpenAIApi } = require("openai")
 
 const config = new Configuration({
-  apiKey: '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'
+  apiKey: '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'
 })
 
 const openai = new OpenAIApi(config);
