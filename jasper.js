@@ -1,7 +1,7 @@
 const qrcode = require('qrcode-terminal');
 const axios = require('axios')
 const keyAPI = require('./key.js')
-const petunjukToken = require('./key.js')
+const petunjukToken = 'Untuk mendapatkan token, Anda hanya perlu memberikan sedikit *DONASI*, dan kami akan memberikan token kepada Anda  *10x* lipat dari jumlah donasi yang Anda berikan.\n\nPetunjuk donasi:\n1. Buka tautan donasi di bio kami.\n2. Pilih jumlah donasi.\n3. Isi data diri, termasuk email.\n4. Cantumkan Nomor WhatsApp Anda. Pada kolom *PESAN*\n5. Pilih metode pembayaran dan bayar.\n\nIngat no.WA harus berawalan *62*\ncontoh : 6289532xxxxx\n*Bukan : 089532xxxxx*\n\nLihat contoh pada gambar diatas!!'
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -155,9 +155,10 @@ client.on('message', async message => {
                                 const result = await chatGPT(incomingMessages);
                                 const updateToken = data.token - result.totalTokens;
                                 const sisaTokenSementara = updateToken + data.tokenDonasi
+                                
                                 setTimeout(function() {
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
-                                }, 100);
+                                }, 1000);
                                 
                                 axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
                                     
