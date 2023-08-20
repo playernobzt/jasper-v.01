@@ -1,8 +1,8 @@
 const qrcode = require('qrcode-terminal');
 const axios = require('axios')
-
-const { Client, LocalAuth } = require('whatsapp-web.js');
-
+const keyAPI = require('./key.js')
+const petunjukToken = require('./key.js')
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
@@ -23,7 +23,7 @@ client.on('ready', () => {
 const { Configuration, OpenAIApi } = require("openai")
 
 const config = new Configuration({
-  apiKey: ''
+  apiKey: keyAPI
 })
 
 const openai = new OpenAIApi(config);
@@ -58,7 +58,9 @@ client.on('message', async message => {
    if (message.type === 'chat' && !message.id.fromMe) {
     try {
         // dapatkan nomor hape
-        const senderName = message.notifyName
+        // const contact = await message.getContact(contact.pushname);
+        const contact = await message.getContact()
+        const senderName = contact.pushname
         const senderNumber = message.from;
         let incomingMessages = message.body;
         incomingMessages = incomingMessages.toLowerCase();
@@ -81,7 +83,8 @@ client.on('message', async message => {
 
 
         //------------------------------------------------------------
-        //            Message config
+        //            Message config apa 
+    
         
 
         // Jika pesan japri *****
@@ -90,46 +93,85 @@ client.on('message', async message => {
             const cekdata = "https://script.google.com/macros/s/AKfycbyiQ4AX4G7Pps6vML6VeYu-RqWeatSF518dMxF__cCKQ_gJlZZDY94LDTbEyxwJ9buG/exec?action=cek-data&whatsapp="
             const register = "https://script.google.com/macros/s/AKfycbyiQ4AX4G7Pps6vML6VeYu-RqWeatSF518dMxF__cCKQ_gJlZZDY94LDTbEyxwJ9buG/exec?action=register&whatsapp="
             const numberHp = senderNumber.replace("@c.us", "")
-            const rname = "&nama="+'rizal'
-            const rtoken = "&token=10000"
+            const rname = "&nama="
+            const rtoken = "&token=5000"
+            const regisChat  = incomingMessages.includes('#daftarkan.saya')
+            const cekToken = incomingMessages.includes('#cek.token')
+            const tambahToken = incomingMessages.includes('#tambah.token')
+            const tokenDonasi = `&tokenDonasi==SUMIF(Donasi!A2:A;${numberHp};Donasi!B2:B)`
+            const sisaToken = `&sisaToken==SUM(VLOOKUP(${numberHp};B1:E;3);VLOOKUP(${numberHp};B1:E;4))`
 
-            axios.get(cekdata+numberHp)
-            .then(async (response) => {
 
-                // Validasi  apakah dia ada di nomor terdaftar  dan masih memiliki token?
-                const {succsess, data, info} = response.data
-                if(data == null) {
-                    message.reply("Maaf  anda tidak terdaftar, \nKetik : *regis.namaanda*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
-                }
-                else if(data !== null && data.token < 0.1){
-                    message.reply('Maaf token anda tidak cukup, silahkan melakukan pengisian token\n\nketik : *cek.token*\n\nuntuk cek sisa token anda')
-                }
-                else if (data.token > 0) {
-                        const tokenUser = data.token;
-                        const newTokenlink = "&newToken=";
-                    
-                        setTimeout(function() {
-                            message.react(reaction);
-                        }, 1000);
-                        
-                        try {
-                            const result = await chatGPT(incomingMessages);
-                            
-                            setTimeout(function() {
-                                message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + "\nKetik : *cek.token*\nuntuk cek sisa token anda");
-                            }, 3000);
-                            
-                            const updateToken = data.token - result.totalTokens;
-                            axios.get(update+numberHp+newTokenlink+updateToken)
-                        } catch (error) {
-                            console.error("Error:", error);
-                            }
-                }
+            
+
+            if(incomingMessages.includes('#daftarkan.saya')){
+                axios.get(register+numberHp+rname+senderName+rtoken+tokenDonasi+sisaToken)
+                    .then (async (response) => {
+                        const {succsess, data, info} = response.data
+                        if(succsess) {
+                            message.reply(`Halo *${senderName}* \n\nSekarang Apa yang bisa saya bantu ?`)
+                        } else if(!succsess) {
+                            message.reply(info)
+                        }
+                    })
+            }
+            else if (cekToken) {
+                axios.get(cekdata+numberHp)
+                    .then(async (response) => {
+                        const {data, info} = response.data
+                        if (data == null) {
+                            message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
+                        }else if(data !== null) {
+                            message.reply(`Sisa token anda : *${data.sisaToken}*`)
+                        }
+                    })
+            }
+            else if (tambahToken) {
+                const media = MessageMedia.fromFilePath('./images/image.jpeg')
+                const chat = message.getChat();
+                (await chat).sendMessage(media, {caption: petunjukToken})
                 
+            }
+            else if (!regisChat && !cekToken && !tambahToken) {
+                axios.get(cekdata+numberHp)
+                .then(async (response) => {
+
+                    // Validasi  apakah dia ada di nomor terdaftar  dan masih memiliki token?
+                    const {succsess, data, info} = response.data
+                    if(data == null) {
+                        message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
+                    }
+                    else if(data !== null && data.token < 0.1){
+                        message.reply('Maaf token anda tidak cukup, silahkan melakukan pengisian token\n\nketik : *#tambah.token*\n\nuntuk tambah token anda')
+                    }
+                    else if (data.sisaToken > 0) {
+                            const newTokenlink = "&newToken=";
+                        
+                            setTimeout(function() {
+                                message.react(reaction);
+                            }, 1000);
+                            
+                            try {
+                                const result = await chatGPT(incomingMessages);
+                                const updateToken = data.token - result.totalTokens;
+                                const sisaTokenSementara = updateToken + data.tokenDonasi
+                                setTimeout(function() {
+                                    message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
+                                }, 100);
+                                
+                                axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
+                                    
+
+                            } catch (error) {
+                                console.error("Error:", error);
+                                }
+                    }
+                    
 
 
 
-            });  
+                });  
+            }
                 
             
 
