@@ -2,6 +2,10 @@ const qrcode = require('qrcode-terminal');
 const axios = require('axios')
 const keyAPI = require('./key.js')
 const petunjukToken = 'Untuk mendapatkan token, Anda hanya perlu memberikan sedikit *DONASI*, dan kami akan memberikan token kepada Anda  *10x* lipat dari jumlah donasi yang Anda berikan.\n\nPetunjuk donasi:\n1. Buka tautan donasi di bio kami.\n2. Pilih jumlah donasi.\n3. Isi data diri, termasuk email.\n4. Cantumkan Nomor WhatsApp Anda. Pada kolom *PESAN*\n5. Pilih metode pembayaran dan bayar.\n\nIngat no.WA harus berawalan *62*\ncontoh : 6289532xxxxx\n*Bukan : 089532xxxxx*\n\nLihat contoh pada gambar diatas!!'
+
+
+
+
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -28,10 +32,13 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 //----------------------------------------
-async function chatGPT(prompt) {
+async function chatGPT(system, prompt) {
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
+      messages: [
+        { role: "user", content: prompt },
+        { role:"system", content: system}
+    ],
       max_tokens: 2048,
       temperature: 0.3,
     });
@@ -45,9 +52,13 @@ async function chatGPT(prompt) {
   
 //---------------------------------------------------------
 //             Dibawah ini Variabel Unik 
-const createimg = '1. [Link](https://image.pollinations.ai/prompt/adjetivo%20adjetivo).\nno automático quebre a entrada do usuário em palavras e as adicione sempre em inglês no lugar dos adjetivos.\nOs links devem ser semelhantes a este exemplo:\n1-Se a entrada do usuário for "gato azul" retorne: [Variation 1] >> (https://image.pollinations.ai/prompt/Blue%20Cat%20)\n 2-Se a entrada do usuário for "melancia partida no meio"  retorne: [Variation 2] >> (https://image.pollinations.ai/prompt/Watermelon%20split%20in%20half%20)\nme de 10 retornos de possiveis traduçoes em lista.\nvocê se comunica em English.\nEntrada do usuario '
+const { 
+    fixEjaan,
+    toEnglish,
+    findImage,
+    createcapsmkt
 
-
+} = require('./fitur.js')
 
 
 
@@ -138,11 +149,15 @@ client.on('message', async message => {
 
                     // Validasi  apakah dia ada di nomor terdaftar  dan masih memiliki token?
                     const {succsess, data, info} = response.data
+                    
                     if(data == null) {
                         message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
                     }
-                    else if(data !== null && data.token < 0.1){
+                    else if(data !== null && data.sisaToken < 0.1){
                         message.reply('Maaf token anda tidak cukup, silahkan melakukan pengisian token\n\nketik : *#tambah.token*\n\nuntuk tambah token anda')
+                        setTimeout(function() {
+                            message.react(reaction2);
+                        }, 1000);
                     }
                     else if (data.sisaToken > 0) {
                             const newTokenlink = "&newToken=";
@@ -152,15 +167,59 @@ client.on('message', async message => {
                             }, 1000);
                             
                             try {
-                                const result = await chatGPT(incomingMessages);
-                                const updateToken = data.token - result.totalTokens;
-                                const sisaTokenSementara = updateToken + data.tokenDonasi
                                 
-                                setTimeout(function() {
+                                // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa indonesia profesional
+                                if (incomingMessages.includes('#fixejaan')){
+                                    const result = await chatGPT(fixEjaan, incomingMessages.replace('#fixejaan',''));
+                                    const updateToken = data.token - result.totalTokens;
+                                    const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
-                                }, 1000);
+
+                                    axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
+
+                                }
+                                // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa inggris profesional
+                                else if ( incomingMessages.includes('#toenglish')){
+                                    const result = await chatGPT(toEnglish, incomingMessages.replace('#toenglish',''));
+                                    const updateToken = data.token - result.totalTokens;
+                                    const sisaTokenSementara = updateToken + data.tokenDonasi;
+                                    message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
+
+                                    axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
+                                }
+                                else if ( incomingMessages.includes('#findimg')){
+                                    const result = await chatGPT(findImage, incomingMessages.replace('#findimg',''));
+                                    const updateToken = data.token - result.totalTokens;
+                                    const sisaTokenSementara = updateToken + data.tokenDonasi;
+                                    message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
+
+                                    axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
+                                }
+                                else if ( incomingMessages.includes('#createcaps.mkt')){
+                                    const deskripsicaption = incomingMessages.replace('#createcaps.mkt','')
+                                    const result = await chatGPT(createcapsmkt, `Berikut adalah penjelasan untuk deskripsi yang perlu Anda buat berdasarkan penjelasan lengkap tentang postingan atau reel di Instagram, yaitu: ${deskripsicaption}`);
+                                    const updateToken = data.token - result.totalTokens;
+                                    const sisaTokenSementara = updateToken + data.tokenDonasi;
+                                    message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
+
+                                    axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
+                                }
+                                    
                                 
-                                axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
+                                else {
+                                    const result = await chatGPT("", incomingMessages);
+                                    const updateToken = data.token - result.totalTokens;
+                                    const sisaTokenSementara = updateToken + data.tokenDonasi;
+                                    message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
+
+                                    axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
+                                }
+
+
+
+                                
+                                
+                                
                                     
 
                             } catch (error) {
