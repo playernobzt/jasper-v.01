@@ -2,7 +2,7 @@
 
 // change API your api key here
 
-const keyAPI = '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'
+const keyAPI = ''
 
 
 
