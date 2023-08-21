@@ -77,6 +77,7 @@ client.on('message', async message => {
         incomingMessages = incomingMessages.toLowerCase();
         const reaction = '👌'; // reaksi oke siap diterima
         const reaction2 = '😭'; // reaksi sedih 
+        const reactionMengetik = '💬'
 
         // dapatkan info dari grup atau bukan
         // pesan menyebut bot atau tidak
@@ -118,6 +119,7 @@ client.on('message', async message => {
             if(incomingMessages.includes('#daftarkan.saya')){
                 axios.get(register+numberHp+rname+senderName+rtoken+tokenDonasi+sisaToken)
                     .then (async (response) => {
+                        message.react(reaction)
                         const {succsess, data, info} = response.data
                         if(succsess) {
                             message.reply(`Halo *${senderName}* \n\nSekarang Apa yang bisa saya bantu ?`)
@@ -129,6 +131,7 @@ client.on('message', async message => {
             else if (cekToken) {
                 axios.get(cekdata+numberHp)
                     .then(async (response) => {
+                        message.react(reaction)
                         const {data, info} = response.data
                         if (data == null) {
                             message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
@@ -151,6 +154,7 @@ client.on('message', async message => {
                     const {succsess, data, info} = response.data
                     
                     if(data == null) {
+                        message.react(reaction2)
                         message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
                     }
                     else if(data !== null && data.sisaToken < 0.1){
@@ -161,15 +165,12 @@ client.on('message', async message => {
                     }
                     else if (data.sisaToken > 0) {
                             const newTokenlink = "&newToken=";
-                        
-                            setTimeout(function() {
-                                message.react(reaction);
-                            }, 1000);
                             
                             try {
                                 
                                 // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa indonesia profesional
                                 if (incomingMessages.includes('#fixejaan')){
+                                    message.react(reactionMengetik);
                                     const result = await chatGPT(fixEjaan, incomingMessages.replace('#fixejaan',''));
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
@@ -180,6 +181,7 @@ client.on('message', async message => {
                                 }
                                 // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa inggris profesional
                                 else if ( incomingMessages.includes('#toenglish')){
+                                    message.react(reactionMengetik);
                                     const result = await chatGPT(toEnglish, incomingMessages.replace('#toenglish',''));
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
@@ -188,6 +190,7 @@ client.on('message', async message => {
                                     axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
                                 }
                                 else if ( incomingMessages.includes('#findimg')){
+                                    message.react(reactionMengetik);
                                     const result = await chatGPT(findImage, incomingMessages.replace('#findimg',''));
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
@@ -196,8 +199,9 @@ client.on('message', async message => {
                                     axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
                                 }
                                 else if ( incomingMessages.includes('#createcaps.mkt')){
+                                    message.react(reactionMengetik);
                                     const deskripsicaption = incomingMessages.replace('#createcaps.mkt','')
-                                    const result = await chatGPT(createcapsmkt, `Berikut adalah penjelasan untuk deskripsi yang perlu Anda buat berdasarkan penjelasan lengkap tentang postingan atau reel di Instagram, yaitu: ${deskripsicaption}`);
+                                    const result = await chatGPT('', `${createcapsmkt}Berikut adalah penjelasan untuk deskripsi yang perlu Anda buat berdasarkan penjelasan lengkap tentang postingan atau reel di Instagram, yaitu : ${deskripsicaption}`);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
@@ -207,6 +211,7 @@ client.on('message', async message => {
                                     
                                 
                                 else {
+                                    message.react(reactionMengetik);
                                     const result = await chatGPT("", incomingMessages);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;

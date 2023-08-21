@@ -17,7 +17,7 @@ const findImage = `1. [Link](https://image.pollinations.ai/prompt/adjetivo%20adj
 
 // fitur buat caption marketing
 const createcapsmkt = `Bertindak sebagai ahli media sosial dan Buatlah caption Instagram yang pendek dan manis serta menarik perhatian pengguna, dan juga mengandung ajakan untuk bertindak. 
-ingat Sebisa mungkin, cobalah untuk memasukkan poin-poin masalah pelanggan ke dalam deskripsi, Gunakan emotikon yang relevan dalam deskripsi, Gunakan 5-8 tag yang relevan dalam deskripsi, dan ingat Jumlah karakter maksimum untuk deskripsi tidak termasuk tagar adalah 150 karakter. Tulis deskripsi dalam bahasa Indonesia lalu buat 3 varian yang berbeda.`
+ingat Sebisa mungkin, cobalah untuk memasukkan poin-poin masalah pelanggan ke dalam deskripsi, Gunakan emotikon yang relevan dalam deskripsi, Gunakan 5-8 tag yang relevan dalam deskripsi, dan ingat Jumlah karakter maksimum untuk deskripsi tidak termasuk tagar adalah 350 karakter. Tulis deskripsi dalam bahasa Indonesia lalu buat 3 varian yang berbeda.`
 
 
 module.exports = {
