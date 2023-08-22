@@ -214,7 +214,7 @@ client.on('message', async message => {
                                 
                                 else {
                                     message.react(reactionMengetik);
-                                    const result = await chatGPT("", incomingMessages);
+                                    const result = await chatGPT(incomingMessages);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
