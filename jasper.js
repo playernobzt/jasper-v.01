@@ -111,7 +111,7 @@ client.on('message', async message => {
             const cekToken = incomingMessages.includes('#cek.token')
             const tambahToken = incomingMessages.includes('#tambah.token')
             const tokenDonasi = `&tokenDonasi==SUMIF(Donasi!A2:A;${numberHp};Donasi!B2:B)`
-            const sisaToken = `&sisaToken==SUM((INDEX(D:D;MATCH("${numberHp}";B:B;0)):(INDEX(E:E;MATCH("${numberHp}";B:B;0)))))`
+            const sisaToken = `&sisaToken==SUM((INDEX(D:D;MATCH(${numberHp};B:B;0)):(INDEX(E:E;MATCH(${numberHp};B:B;0)))))`
 
 
             
