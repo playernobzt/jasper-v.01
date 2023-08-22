@@ -122,7 +122,7 @@ client.on('message', async message => {
                         message.react(reaction)
                         const {succsess, data, info} = response.data
                         if(succsess) {
-                            message.reply(`Halo *${senderName}* \n\nSekarang Apa yang bisa saya bantu ?`)
+                            message.reply(`Halo *${senderName}* \nTerimakasih telah mendaftar\n\nAda yang bisa saya bantu ? `)
                         } else if(!succsess) {
                             message.reply(info)
                         }
@@ -134,7 +134,7 @@ client.on('message', async message => {
                         message.react(reaction)
                         const {data, info} = response.data
                         if (data == null) {
-                            message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
+                            message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\n\nuntuk mulai mendaftarkan anda pada \n*Gratis* !!")
                         }else if(data !== null) {
                             message.reply(`Sisa token anda : *${data.sisaToken}*`)
                         }
@@ -155,7 +155,7 @@ client.on('message', async message => {
                     
                     if(data == null) {
                         message.react(reaction2)
-                        message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\nUntuk mendaftar dan mendapatkan 10000 token *Gratis* !!")
+                        message.reply("Maaf  anda tidak terdaftar, \nKetik : *#daftarkan.saya*\n\nuntuk mulai mendaftarkan anda pada \n*Gratis* !!")
                     }
                     else if(data !== null && data.sisaToken < 0.1){
                         message.reply('Maaf token anda tidak cukup, silahkan melakukan pengisian token\n\nketik : *#tambah.token*\n\nuntuk tambah token anda')
