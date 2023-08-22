@@ -111,7 +111,7 @@ client.on('message', async message => {
             const cekToken = incomingMessages.includes('#cek.token')
             const tambahToken = incomingMessages.includes('#tambah.token')
             const tokenDonasi = `&tokenDonasi==SUMIF(Donasi!A2:A;${numberHp};Donasi!B2:B)`
-            const sisaToken = `&sisaToken==SUM(VLOOKUP(${numberHp};B1:E;3);VLOOKUP(${numberHp};B1:E;4))`
+            const sisaToken = `&sisaToken==SUM((INDEX(D:D;MATCH("${numberHp}";B:B;0)):(INDEX(E:E;MATCH("${numberHp}";B:B;0)))))`
 
 
             
@@ -171,7 +171,7 @@ client.on('message', async message => {
                                 // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa indonesia profesional
                                 if (incomingMessages.includes('#fixejaan')){
                                     message.react(reactionMengetik);
-                                    const result = await chatGPT('', `${fixEjaan} ${incomingMessages.replace('#fixejaan','')}`);
+                                    const result = await chatGPT('',    `${fixEjaan} ${incomingMessages.replace('#fixejaan','')}`);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
