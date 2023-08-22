@@ -32,12 +32,11 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 //----------------------------------------
-async function chatGPT(system, prompt) {
+async function chatGPT(prompt) {
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
         { role: "user", content: prompt },
-        { role:"system", content: system}
     ],
       max_tokens: 2048,
       temperature: 0.3,
@@ -171,7 +170,8 @@ client.on('message', async message => {
                                 // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa indonesia profesional
                                 if (incomingMessages.includes('#fixejaan')){
                                     message.react(reactionMengetik);
-                                    const result = await chatGPT('',    `${fixEjaan} ${incomingMessages.replace('#fixejaan','')}`);
+                                    const prompt = incomingMessages.replace('#fixejaan','')
+                                    const result = await chatGPT(`${fixEjaan} ${prompt}`);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
@@ -182,16 +182,18 @@ client.on('message', async message => {
                                 // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa inggris profesional
                                 else if ( incomingMessages.includes('#toenglish')){
                                     message.react(reactionMengetik);
-                                    const result = await chatGPT(toEnglish, incomingMessages.replace('#toenglish',''));
+                                    const prompt = incomingMessages.replace('#toenglish','')
+                                    const result = await chatGPT(`${toEnglish}${prompt}`);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
 
                                     axios.get(update+numberHp+newTokenlink+updateToken+tokenDonasi+sisaToken)
                                 }
-                                else if ( incomingMessages.includes('#findimg')){
+                                else if ( incomingMessages.includes('#findimage')){
                                     message.react(reactionMengetik);
-                                    const result = await chatGPT(findImage, incomingMessages.replace('#findimg',''));
+                                    const prompt = incomingMessages.replace('#findimage', '')
+                                    const result = await chatGPT(`${findImage} ${prompt}`);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
@@ -201,7 +203,7 @@ client.on('message', async message => {
                                 else if ( incomingMessages.includes('#createcaps.mkt')){
                                     message.react(reactionMengetik);
                                     const deskripsicaption = incomingMessages.replace('#createcaps.mkt','')
-                                    const result = await chatGPT('', `${createcapsmkt}Berikut adalah penjelasan untuk deskripsi yang perlu Anda buat berdasarkan penjelasan lengkap tentang postingan atau reel di Instagram, yaitu : ${deskripsicaption}`);
+                                    const result = await chatGPT(`${createcapsmkt}Berikut adalah penjelasan untuk deskripsi yang perlu Anda buat berdasarkan penjelasan lengkap tentang postingan atau reel di Instagram, yaitu : ${deskripsicaption}`);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);

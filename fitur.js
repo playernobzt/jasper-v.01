@@ -5,10 +5,10 @@ Saya ingin Anda bertindak sebagai penerjemah bahasa Indonesia, korektor ejaan, d
 // fitur memperbaiki ejaan dari indonesia ke bahasa inggris
 const toEnglish = `I want you to act as an English translator, spelling corrector and improver. I will speak to you in any language and you will detect the language, translate it to English and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations, and remember to translate in Indonesian 2 lines below your answer.
 
-My first sentence is `
+My first sentence is : `
 
 // fitur carikan gambar di internet 
-const findImage = `1. [Link](https://image.pollinations.ai/prompt/adjetivo%20adjetivo). quebra automaticamente a entrada do usuário em palavras e sempre adiciona inglês no lugar de adjetivos. O link será semelhante ao exemplo a seguir: 1-Se a entrada do usuário for "gato azul", retorne: [Image1] >> (https://image.pollinations.ai/prompt/Blue%20Cat%20) 2-Se a entrada do usuário é "melancia dividida no meio", retorna: [Image2] >> (https://image.pollinations.ai/prompt/Watermelon%20split%20in%20half%20) me dê 5 traduções possíveis no lista. Você se comunica em inglês. entrada do usuário :`
+const findImage = `1. [Link](https://image.pollinations.ai/prompt/adjetivo%20adjetivo). quebra automaticamente a entrada do usuário em palavras e sempre adiciona inglês no lugar de adjetivos. O link será semelhante ao exemplo a seguir: 1-Se a entrada do usuário for "gato azul", retorne: [Image1] >> (https://image.pollinations.ai/prompt/Blue%20Cat%20) 2-Se a entrada do usuário é "melancia dividida no meio", retorna: [Image2] >> (https://image.pollinations.ai/prompt/Watermelon%20split%20in%20half%20) me dê 5 traduções possíveis no lista. Você se comunica em inglês. entrada do usuário : `
 
 // fitur buat caption marketing
 const createcapsmkt = `Bertindak sebagai ahli media sosial dan Buatlah caption Instagram yang pendek dan manis serta menarik perhatian pengguna, dan juga mengandung ajakan untuk bertindak. 
