@@ -171,7 +171,7 @@ client.on('message', async message => {
                                 // fitur fixejaan >> memperbaiki ejaan semua bahasa ke bahasa indonesia profesional
                                 if (incomingMessages.includes('#fixejaan')){
                                     message.react(reactionMengetik);
-                                    const result = await chatGPT(fixEjaan, incomingMessages.replace('#fixejaan',''));
+                                    const result = await chatGPT('', `${fixEjaan} ${incomingMessages.replace('#fixejaan','')}`);
                                     const updateToken = data.token - result.totalTokens;
                                     const sisaTokenSementara = updateToken + data.tokenDonasi;
                                     message.reply(result.generatedText + "\n\nPenggunaan token: " + `*${result.totalTokens}*` + `\nSisa token : *${sisaTokenSementara}*`);
